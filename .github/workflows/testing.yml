@@ -20,6 +20,8 @@ jobs:
           cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local \
                 -DCMAKE_BUILD_TYPE=Release \
                 -DCMAKE_CXX_FLAGS="-Wall" \
+                -DCMAKE_INSTALL_RPATH="@executable_path" \
+                -DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE \
                 -Wno-dev Cmake/
           make -j$(sysctl -n hw.ncpu)
 
