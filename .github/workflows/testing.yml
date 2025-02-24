@@ -1,22 +1,30 @@
-name: Build DemoIccMAX
+name: Build and Upload Binaries
 
 on:
-  workflow_dispatch
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: macos-latest
+
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Run DemoIccMAX Build Script
+      - name: Install Homebrew Dependencies
+        run: brew install nlohmann-json libxml2 wxwidgets libtiff
+
+      - name: Build Project
         run: |
-          cd contrib/Build/cmake
-          /bin/zsh xnu_build_master_branch.zsh
+          cd Build
+          cmake -DCMAKE_INSTALL_PREFIX=$HOME/.local \
+                -DCMAKE_BUILD_TYPE=Debug \
+                -DCMAKE_CXX_FLAGS="-g -fsanitize=address,undefined -fno-omit-frame-pointer -Wall" \
+                -Wno-dev Cmake/
+          make -j$(sysctl -n hw.ncpu)
 
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: DemoIccMAX-build
-          path: /tmp/DemoIccMAX
+          name: built-artifacts
+          path: Build
