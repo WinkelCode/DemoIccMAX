@@ -1,0 +1,18 @@
+name: Build DemoIccMAX
+
+on:
+  workflow_dispatch
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Run DemoIccMAX Build Script
+        run: |
+          cd /tmp
+          /bin/zsh -c "$(curl -fsSL https://raw.githubusercontent.com/InternationalColorConsortium/DemoIccMAX/refs/heads/development/contrib/Build/cmake/xnu_build_master_branch.zsh)"
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: DemoIccMAX-build
+          path: /tmp/DemoIccMAX
